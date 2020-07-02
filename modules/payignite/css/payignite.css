@@ -1,0 +1,179 @@
+/*
+-------------------------------------------------------------------------------------------------------
+Tables
+-------------------------------------------------------------------------------------------------------
+*/
+
+table {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 0;
+  border-collapse: separate;
+  font-size: 13px;
+}
+
+table th, table td {
+  padding: 10px 10px 9px;
+  line-height: 13.5px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  padding-top: 9px;
+  font-weight: bold;
+  border-bottom-width: 2px;
+}
+
+table tbody {
+    transition: background-color 200ms ease;
+}
+
+table tbody tr:hover {
+    background-color: rgba(0, 0, 200, .2);
+    color: black;
+    transition: background-color 200ms ease;
+}
+
+/* Test for Gift Cards */
+input.required.smallbox {
+    width: 70%;
+}
+
+.smallbox2 {
+    width: 20% !important;
+}
+
+button.btn.blue.save {
+    color: #FFF;
+}
+
+table tbody tr.none:hover {
+    background-color: transparent;
+    color: inherit;
+    transition: none;
+}
+
+/* Block to resize for viewport (id of the parent of the table) */
+#contentWrapper {
+    width: 100%;
+}
+
+/*
+-------------------------------------------------------------------------------------------------------
+Customer single item view
+-------------------------------------------------------------------------------------------------------
+*/
+
+.grp {
+    display: inline-block;
+    padding: 5px;
+}
+
+.key {
+    display: inline-block;
+    font-weight: bold;
+}
+
+.val {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.grp:nth-child(odd) {
+    float: left;
+    width: 45%;
+}
+
+.grp:nth-child(even) {
+    float: right;
+    width: 45%;
+}
+
+/*
+-------------------------------------------------------------------------------------------------------
+Required Star
+-------------------------------------------------------------------------------------------------------
+*/
+
+input[type=text].required, input[type=password].required, textarea.required {
+    background: #EEE url(required_star.png) no-repeat 100% 50%;
+}
+
+input.required:focus {
+    background: #FFF url(required_star.png) no-repeat 100% 50%;
+}
+
+textarea.required {
+    background-position: 100% 0;
+}
+
+input[type=text].valid, input[type=password].valid, textarea.valid {
+    background-image: none;
+}
+
+/* Required field without the red star (class = required none) */
+input[type=text].required.none, input[type=password].required.none, textarea.required.none {
+    background-image: none;
+}
+
+input.required.none:focus {
+    background-image: none;
+}
+
+/* Dialog Pop-up for required star */
+#dialog p {
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+#dialog, #giftcard {
+    display: none;
+}
+
+/*
+-------------------------------------------------------------------------------------------------------
+Mobile View (<481px)
+-------------------------------------------------------------------------------------------------------
+*/
+
+@media all and (max-width: 480px), (max-device-width: 480px) {
+
+/*
+-------------------------------------------------------------------------------------------------------
+Customer single item view
+-------------------------------------------------------------------------------------------------------
+*/
+    .grp:nth-child(odd) {
+        float: none;
+        width: 100%;
+    }
+    
+    .grp:nth-child(even) {
+        float: none;
+        width: 100%;
+    }
+
+    .grp {
+        display: block;
+        padding: 5px;
+        float: none;
+        width: 100%;
+    }
+    
+    .key {
+        display: inline-block;
+        font-weight: bold;
+    }
+    
+    .val {
+        display: inline-block;
+        margin-left: 5px;
+    }
+}
+.noclose .ui-dialog-titlebar-close
+{
+    display:none;
+}
+.error{ color: red; font-weight: bold }

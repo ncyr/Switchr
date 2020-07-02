@@ -1,0 +1,305 @@
+<?php defined('BASEPATH') or exit('No direct script access allowed');
+
+class Hosts extends Public_Controller
+{
+    protected $section = 'hosts';
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->load->language('hosts');
+        $this->load->library('Logging');
+        $this->load->driver('Streams');
+        $this->load->library('Connect');
+        $this->load->model('servers/servers_m');
+        $this->load->model('hosts_m');
+        $this->load->model('ports/ports_m');
+        $this->load->model('payignite/payignite_m', 'Payignite');
+    }
+
+    public function index()
+    {
+        $id = $this->current_user->id;
+        $hosts = $this->hosts_m->get_hosts($id);
+        $assigned_hosts = $this->hosts_m->get_assigned_hosts($id);
+        $this->template
+                ->title($this->module_details['name'])
+                ->set('time_status_limit', date('U', strtotime('-40 seconds')))
+                ->set('hosts', $hosts)
+                ->set('assigned_hosts', $assigned_hosts)
+                ->append_js('module::hosts.js')
+                ->build('hosts_index');
+    }
+
+    public function create()
+    {
+        // I forget why I wanted a $_POST check here...
+        // if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        //     echo '<h3>POST!!!</h3>';
+        //     die;
+        // }
+
+        // Get an array of all servers to load into dropdown.
+        $servers = $this->servers_m->getAllServers()['entries'];
+        // If the user has not used all allocated hosts...
+        //if ($this->Payignite->hostsAvailable() > 0) {
+        $this->template
+            ->title('Add Host')
+            ->set('servers', $servers)
+            ->append_js('module::hosts.js')
+            ->build('hosts_create');
+        // If no Plan, must create one.
+        //} elseif ($this->Payignite->Plan->getPlan() == false) {
+            //redirect('/payignite/create');
+        // If the user has used all allocated hosts, must buy more.
+        //} else {
+            //redirect('/payignite/edit');
+        //}
+    }
+
+    /**
+     * Assign other user to current user's host.
+     * This will allow the other user to manipulate that host.
+     */
+    public function assign_user()
+    {
+        // On form submission.
+        if ($_POST) {
+            // Get the id and email of a user by looking up the email address submitted.
+            $this->db->select('id, email');
+            $result = $this->db->get_where('default_users', array('email' => $_POST['user_email']), 1)->result()[0];
+
+            // If no email address exists then refresh the page.
+            // TODO: AJAX error modal.
+            if (!$result) {
+                redirect('hosts/assign_user', 'refresh');
+            }
+
+            // If email address is found, then add user to table and redirect to different page.
+            $entry_data = array(
+                'host_id' => $_POST['host_id'],
+                'user_id' => $result->id,
+            );
+            $this->streams->entries->insert_entry($entry_data, 'host_users', 'hosts');
+            redirect('hosts/assigned_users/'.$_POST['host_id'], 'refresh');
+        }
+
+        // Initial view.
+        $hosts = $this->hosts_m->get_hosts($this->current_user->id);
+        $this->template
+            ->title('Assign User')
+            ->set('hosts', $hosts)
+            ->build('hosts_assign_user');
+    }
+
+    /**
+     * View all users that have been assigned a host from the current user.
+     * @param  int  $host_id  ID of host.
+     */
+    public function assigned_users($host_id = false)
+    {
+        $this->template
+            ->set('host_id', $host_id)
+            ->title('Assigned Users')
+            ->build('hosts_assigned');
+    }
+
+    /**
+     * Remove host access from an assigned user.
+     * @param  int  $host_id  ID of host assigned.
+     * @param  int  $user_id  ID of user assigned.
+     */
+    public function delete_assigned($host_id, $user_id)
+    {
+        $this->hosts_m->deleteAssigned($host_id, $user_id);
+        redirect('/hosts/assigned_users/'.$host_id, 'refresh');
+    }
+
+    // public function assign_host_group($host_id, $group_id)
+    // {
+    //     $this->template
+    //         ->set('host_id', $host_id)
+    //         ->title('')
+    //         ->build('hosts_assigned');
+    // }
+
+    public function create_ajax()
+    {
+        $this->template->build('hosts_create_ajax');
+    }
+
+    public function delete($id)
+    {
+        $this->hosts_m->deleteHost($id);
+        redirect('/hosts', 'refresh');
+    }
+
+    public function pushConfig($id)
+    {
+        $this->connect->pushConfig($id);
+        redirect('/hosts', 'refresh');
+    }
+
+    public function restartHost($host_id)
+    {
+        $this->connect->restartHost($host_id);
+        redirect('/hosts', 'refresh');
+    }
+
+    public function bandwidth($id)
+    {
+        $this->template
+            ->title('Bandwidth Usage')
+            ->set('host_id', $id)
+            ->append_js('module::hosts.js')->append_js('theme::clipboard.min.js')
+            ->build('host_band');
+    }
+
+    public function resetConnection($id)
+    {
+        //make sure they own it first
+        $this->connect->resetConnection($id);
+        redirect('/hosts', 'refresh');
+    }
+
+    public function resetService($id)
+    {
+        //make sure they own it first
+        $this->connect->resetHostService($id);
+        redirect('/hosts/dashboard/'.$id, 'refresh');
+    }
+
+    public function update($key)
+    {
+        $username = $this->input->post('username');
+        $this->load->library('encrypt');
+        if ($key == "holdontoyourpotatoesdrjones") {
+            $params = array(
+                'namespace' => 'hosts',
+                'stream'    => 'hosts'
+            );
+            $hosts = $this->streams->entries->get_entries($params);
+            foreach ($hosts['entries'] as $row) {
+                if ($row['host_ssh_user'] == $username) {
+                    $host_id = $row['id'];
+                }
+            }
+
+            $host = $this->streams->entries->get_entry($host_id, 'hosts', 'hosts');
+
+            if ($host_info = $this->input->post('computerinfo')) {
+                $entry_data = array(
+                        'host_info' => "$host_info"
+                    );
+
+                $this->streams->entries->update_entry($host_id, $entry_data, 'hosts', 'hosts');
+                return true;
+            } elseif ($heartbeat = $this->input->post('heartbeat')) {
+                $entry_data = array(
+                        'host_status_timestamp' => date('U')
+                    );
+
+                $this->streams->entries->update_entry($host_id, $entry_data, 'hosts', 'hosts');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function dashboard($host_id)
+    {
+        $host = $this->streams->entries->get_entry($host_id, 'hosts', 'hosts');
+        $this->template
+            ->title('Dashboard')
+            ->set('host', $host)
+            ->append_js('module::hosts.js')
+            ->build('host_dash');
+    }
+
+    /**
+     * Returns the value of library function Connect->okayToPush().
+     * Checks for the 'CHANGED' file, which lets us know that the host will be restarting soon.
+     * If it exists then we don't want to try to push for fear of the host being disconnected at that exact moment.
+     * @param   string  Row ID of host.
+     * @return  string  We are only using this function with AJAX,
+     *                  so we need an actual string to check against: 'true' or 'false'
+     */
+    public function okayToPush()
+    {
+        if ($this->connect->okayToPush($_POST['host_id'])) {
+            echo 'true';
+        } else {
+            echo 'false';
+        }
+    }
+<<<<<<< HEAD
+    // for testing - remove if left
+    public function isowner($host_id, $date)
+    {
+        $this->load->library('reports/aloha');
+        $data = $this->aloha->fixWaitingGrind($host_id, $date);
+        var_dump($data);die();
+=======
+
+    public function createVnc()
+    {
+        $guac_db = $this->load->database('guac_db', true);
+        $host_id      = $_POST['host_id'];
+        $host_name    = $_POST['host_name'];
+        $vnc_port     = $_POST['vnc_port'];
+        $vnc_password = $_POST['vnc_password'];
+        $host         = $this->streams->entries->get_entry($host_id, 'hosts', 'hosts', false);
+
+        // Insert data into guacamole_connection.
+        $guac_db->insert('guacamole_connection', array(
+            'protocol'        => 'vnc',
+            'connection_name' => $host_name,
+            'max_connections' => 3,
+            'max_connections_per_user' => 1,
+        ));
+
+        // Get the row ID of guacamole_connection insert.
+        $conn_id = $guac_db->insert_id();
+
+        // Create port on server for connection
+        $port = $this->ports_m->create(
+            $host_id,
+            $host->host_server_id,
+            $vnc_port,
+            'default_vnc'
+        );
+
+        // Insert hostname.
+        $guac_db->insert('guacamole_connection_parameter', array(
+            'connection_id'   => $conn_id,
+            'parameter_name'  => 'hostname',
+            'parameter_value' => 'localhost',
+        ));
+        // Insert VNC password.
+        $guac_db->insert('guacamole_connection_parameter', array(
+            'connection_id'   => $conn_id,
+            'parameter_name'  => 'password',
+            'parameter_value' => $vnc_password,
+        ));
+        // Insert VNC port.
+        $guac_db->insert('guacamole_connection_parameter', array(
+            'connection_id'   => $conn_id,
+            'parameter_name'  => 'port',
+            'parameter_value' => $port['remote_port'],
+        ));
+
+        // Allow this user to use this connection.
+        $guac_db->insert('guacamole_connection_permission', array(
+            'user_id'         => $this->current_user->id,
+            'connection_id'   => $conn_id,
+            'permission'      => 'READ',
+        ));
+
+        // Update host entry with guac_vnc connection ID.
+        $this->streams->entries->update_entry($host_id, array('host_guac_vnc_id' => $conn_id), 'hosts', 'hosts');
+>>>>>>> guac
+    }
+}
+
+/* End of file hosts.php */

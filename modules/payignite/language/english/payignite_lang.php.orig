@@ -1,0 +1,124 @@
+<?php
+<<<<<<< HEAD
+
+$lang['payignite:id']                         = 'ID';
+$lang['payignite:new']                        = 'New';
+$lang['payignite:edit']                       = 'Edit';
+$lang['payignite:payignite']                        = 'PAYignite';
+$lang['payignite:invoices']                       = 'Invoices';
+$lang['payignite:customer_description']       = 'Customer Description';
+$lang['payignite:customer_email']            = 'Customer E-mail';
+
+=======
+$lang['payignite:id']                         = 'ID';
+$lang['payignite:new']                        = 'New Cart';
+$lang['payignite:edit']                       = 'Edit Cart';
+$lang['payignite:save']                       = 'Save';
+$lang['payignite:update']                     = 'Update';
+$lang['payignite:reset']                      = 'Reset';
+$lang['payignite:close']                      = 'Close';
+$lang['payignite:payignite']                        = 'Cart';
+$lang['payignite:payignites']                       = 'Carts';
+$lang['payignite:no_payignites']                    = 'There are currently no Cart';
+>>>>>>> develop
+$lang['payignite:pay']                        = 'Pay';
+$lang['payignite:subtotal']                     = 'Sub-Total';
+$lang['payignite:total']                     = 'Total';
+$lang['payignite:total_amount']              = 'Total Amount';
+$lang['payignite:amount']                    = 'Amount';
+$lang['payignite:amount_off']                = 'Amount Off';
+$lang['payignite:percent_off']               = 'Percent Off';
+$lang['payignite:invoice_number']            = 'Invoice #';
+$lang['payignite:invoice_id']               = 'Invoice ID';
+$lang['payignite:invoice']                  = 'Invoice';
+<<<<<<< HEAD
+$lang['payignite:create_invoice']                  = 'New Invoice';
+=======
+$lang['payignite:invoices']                  = 'Invoices';
+>>>>>>> develop
+$lang['payignite:settings']                  = 'Settings';
+$lang['payignite:payments']          	= 'Payments';
+$lang['payignite:duration']          	      = 'Duration';
+$lang['payignite:end_date']          	     = 'End Date';
+$lang['payignite:created_date']                 = 'Created On';
+$lang['payignite:paid']                     = 'Paid';
+$lang['payignite:closed']                     = 'Closed';
+
+// Coupons
+$lang['payignite:coupons']          	        = 'Coupons';
+$lang['payignite:coupon']          	        = 'Coupon';
+$lang['payignite:coupon_code']          	= 'Coupon Code';
+$lang['payignite:coupon_create']          	= 'Create a Coupon';
+$lang['payignite:max_redemptions']          	= 'Amount of Redemptions';
+
+
+// Customers
+$lang['payignite:customers']          	        = 'Customers';
+$lang['payignite:customer']          	        = 'Customer';
+$lang['payignite:customer_details']          	= 'Customer Details';
+$lang['payignite:customer_id']          	= 'Customer ID';
+$lang['payignite:user_id']          	        = 'User ID';
+$lang['payignite:customer_create']          	= 'Create a Customer';
+$lang['payignite:customer_edit']          	= 'Edit Customer';
+$lang['payignite:customer_beginning_balance']   = 'Beginning Balance';
+$lang['payignite:customer_description']         = 'Description';
+$lang['payignite:customer_email']               = 'E-mail';
+$lang['payignite:customer_id']                  = 'ID';
+$lang['payignite:customer_subscriptions']       = 'Subscriptions';
+$lang['payignite:customer_default_card']        = 'Default Card';
+$lang['payignite:customer_card']                = 'Card';
+$lang['payignite:customer_cards']               = 'Cards';
+$lang['payignite:customer_name']                = 'Full Name';
+$lang['payignite:customer_card_number']         = 'Card Number';
+$lang['payignite:customer_card_last4']          = 'Card Number (last 4)';
+$lang['payignite:customer_card_cvc']            = 'CVC Code';
+$lang['payignite:customer_card_cvc_check']      = 'CVC Code Check';
+$lang['payignite:customer_card_exp_date']       = 'Expiration Date';
+$lang['payignite:customer_address1']            = 'Address Line 1';
+$lang['payignite:customer_address1_check']      = 'Address Line 1 (check)';
+$lang['payignite:customer_address2']            = 'Address Line 2 (Apt/Suite)';
+$lang['payignite:customer_city']                = 'City';
+$lang['payignite:customer_state']               = 'State';
+$lang['payignite:customer_zip']                 = 'Zip Code';
+$lang['payignite:customer_zip_check']           = 'Zip Code (check)';
+$lang['payignite:customer_last_charge_failed']  = 'Last Charge Failed';
+$lang['payignite:trial_end']                    = 'Trial End Date';
+
+// Plans
+$lang['payignite:plans']          	        = 'Plans';
+$lang['payignite:plan']          	        = 'Plan';
+$lang['payignite:plan_quantity']          	= 'Plan Quantity';
+$lang['payignite:plan_no_entries']              = 'There are currently no plans';
+$lang['payignite:plan_create']          	= 'Create a Plan';
+$lang['payignite:plan_name_name']          	= 'Plan Name';
+$lang['payignite:plan_term']          	        = 'Term';
+$lang['payignite:plan_amount']          	= 'Price';
+$lang['payignite:plan_total_amount']          	= 'Total Price';
+$lang['payignite:plan_trial_period']          	= 'Trial Period';
+$lang['payignite:plan_interval']          	= 'Term Interval';
+$lang['payignite:plan_interval_count']         	= 'Term Interval Count';
+$lang['payignite:plan_status']          	= 'Status';
+
+$lang['payignite:subscriptions']              = 'Subscriptions';
+
+$lang['payignite:submit_success']             = 'New Cart submitted successfully.';
+$lang['payignite:submit_failure']             = 'There was a problem submitting your Cart.';
+$lang['payignite:deleted']                    = 'The Cart was deleted.';
+
+$lang['payignite:categories']                 = 'Categories';
+$lang['payignite:category:new']		        = 'New Category';
+
+$lang['payignite:streams']                    = 'Streams';
+$lang['payignite:view_options']               = 'View Options';
+$lang['payignite:field_assignments']          = 'Field Assignments';
+$lang['payignite:new_assignment']          	= 'New Field Assignment';
+$lang['payignite:edit_assignment']          	= 'Edit Field Assignment';
+
+//Payments
+$lang['payignite:card']          	        = 'Card';
+$lang['payignite:card_ending']          	= 'Card Ending';
+$lang['payignite:cardholder']          	        = 'Cardholder';
+$lang['payignite:charge_id']          	        = 'Charge ID';
+$lang['payignite:paid']          	        = 'Paid';
+$lang['payignite:refunded']          	        = 'Refunded';
+$lang['payignite:description']          	= 'Description';

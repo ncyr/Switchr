@@ -1,0 +1,86 @@
+<<<<<<< HEAD
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Payignite extends Public_Controller
+{
+
+    /**
+     * The constructor
+     * @access public
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->lang->load('payignite');
+        $this->load->library('stripe/lib/stripe');
+        $this->load->driver('Streams');
+        
+        Stripe::setApiKey(Settings::get('payignite_setting_stripe_key'));
+    }
+
+    public function index()
+    {
+        $this->load->model('payignite_m', "Payignite");
+        $entries = Stripe_Invoice::all(array('limit' => 100));
+        foreach( $entries['data'] as $row ){
+            //var_dump($this->Payignite->getUserByCustomerId('cus_494jKxCmFGOfKn'));die();
+            //if( $row['customer'] == $this->Payignite->getUserByCustomerId()->id ){
+                //$data['entries'] = $row;
+            //}
+        }
+        $this->template
+                ->title($this->module_details['name'])
+                ->build('index', $data);
+    }
+
+}
+
+/* End of file payignite.php */
+=======
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Payignite extends Public_Controller
+{
+
+    protected $data;
+
+    public function __construct()
+    {
+        parent::__construct();
+	
+	$this->load->library('stripe/lib/stripe');
+        Stripe::setApiKey(Settings::get('payignite_setting_stripe_key'));
+	
+        $this->lang->load('payignite');
+        $this->load->driver('Streams');
+        $this->load->model('payignite_m', 'Payignite');
+        
+        $this->template
+		->append_js('module::jquery.1_10_2.min.js')
+                ->append_js('module::dataTables.js')
+                ->append_css('module::dataTables.css')
+                ->append_js('module::payignite.js');
+    }
+
+    public function index()
+    {
+        $params = array(
+                        'stream'    => 'customer_user',
+                        'namespace' => 'payignite',
+                        'where'     => "customer_user_id =".$this->current_user->id
+                    );
+                    
+        $data['current_customer'] = $this->streams->entries->get_entries($params);
+        $data['entries'] = $this->Payignite->getAllEntries('Invoice');
+	//$data['entries'] = Stripe_Invoice::all(array('limit' => 100));
+        $this->template
+                ->title($this->module_details['name'])
+                ->build('index', $data);
+    }
+
+
+}
+
+/* End of file payignite.php */
+>>>>>>> feature/invoices

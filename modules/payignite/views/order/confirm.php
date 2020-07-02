@@ -1,0 +1,1 @@
+<?php echo $customer['customer_user_customer_id'];?>

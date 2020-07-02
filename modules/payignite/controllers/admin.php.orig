@@ -1,0 +1,114 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+/**
+ * FAQ Module
+ *
+ * This is a sample module for PyroCMS
+ * that illustrates how to use the streams core API
+ * for data management. It is also a fully-functional
+ * FAQ module so feel free to use it on your sites.
+ *
+ * Most of these functions use the Streams API CP driver which
+ * is designed to handle repetitive CP tasks, down to even loading the page.
+ *
+ * @author 		Adam Fairholm - PyroCMS Dev Team
+ * @package 	PyroCMS
+ * @subpackage 	Streams Sample Module
+ */
+class Admin extends Admin_Controller
+{
+    // This will set the active section tab
+    protected $section = 'invoice';
+    
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library('stripe/lib/stripe');
+        Stripe::setApiKey(Settings::get('payignite_setting_stripe_key'));
+        
+        $this->lang->load('payignite');
+        $this->load->driver('Streams');
+    }
+
+    /**
+     * Show all invoices
+     *
+     * @return	void
+     */
+    public function index()
+    {   
+        $data['entries'] = Stripe_Invoice::all(array('limit' => 100));
+        $this->template
+                ->title($this->module_details['name'])
+                ->build('admin/index', $data);
+    }
+<<<<<<< HEAD
+    /**
+     * create invoice
+     *
+     * @return	void
+     */
+    public function create()
+=======
+
+    public function view($id)
+    {   
+        $data['entries'] = Stripe_Invoice::retrieve($id);
+        $this->template
+                ->title($this->module_details['name'])
+                ->build('admin/view', $data);
+    }
+
+
+    public function index_alt()
+>>>>>>> develop
+    {
+        if($this->input->post()){
+            $data = $this->input->post();
+            array_pop($data);
+            Stripe_Invoice::create($data);
+        }
+        else{
+            $this->template
+                ->title($this->module_details['name'])
+                ->build('admin/create');
+        }
+<<<<<<< HEAD
+    }
+    /**
+     * edit invoice
+     *
+     * @return	void
+     */
+    public function edit($id = 0)
+    {
+        //We don't really need this yet
+    }
+    /**
+     * delete invoice
+     *
+     * @return	void
+     */
+    public function delete($id = 0)
+=======
+    
+    public function close($id)
+    {
+        $invoice = Stripe_Invoice::retrieve($id);
+        $invoice->closed = true;
+        $invoice->save();
+        header("location: " . $_SERVER['HTTP_REFERER']);
+        
+    }
+
+    /*
+    public function delete($id)
+>>>>>>> develop
+    {
+        $ii = Stripe_InvoiceItem::retrieve($id);
+        $ii->delete();
+        header("location: " . $_SERVER['HTTP_REFERER']);
+        //redirect('admin/payignite/');
+    }
+    */
+}

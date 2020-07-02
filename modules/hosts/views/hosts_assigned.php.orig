@@ -1,0 +1,79 @@
+<<<<<<< HEAD
+
+<div id="body" class="section">
+    {{ if user:logged_in }}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>Assigned Hosts<a style="float: right" id="addHost" class="btn btn-default btn" onclick="window.history.go('-1')">
+                <span class="glyphicon glyphicon-back">Back</span>
+            </a><a style="float: right" id="addHost" class="btn btn-default btn" href="/hosts/assign_user">
+                <span class="glyphicon glyphicon-user">Assign User</span>
+            </a></h2>
+        </div>
+    <table class="table table-striped datatable">
+        <thead>
+            <tr>
+                   <th><a class="help" title="Host Name" description="This the descriptive name for the host.">Name</a></th><th><a class="help" title="User ID" description="This is the email address of the user assigned to the host.">User ID</a></th><th></th>
+            </tr>
+        </thead>
+                {{ streams:cycle namespace="hosts" stream="host_users" limit="5" include="<?php echo $this->current_user->id;?>" include_by="created_by" }}
+                {{ entries }}
+                <tr class="{{ odd_even }}">
+                    <td>{{ host_id.host_desc }}</td>
+                    <td>{{ user_id.email }}</td>
+                    <td>
+                        <a href="delete_assigned/{{ host_id.id }}/{{ user_id.user_id }}" class="confirm" title="Remove Assigned User">
+                            <button class="btn btn-danger">Remove</button>
+                        </a>
+                    </td>
+                    </td>
+                </tr>
+                {{ /entries }}
+                {{ /streams:cycle }}
+                {{ pagination }}
+=======
+<!-- <div class="content"> -->
+<div id="body" class="section">
+    {{ if user:logged_in }}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>{{ template:title }}
+                    <a style="float: right" id="backBtn" class="btn btn-default btn" onclick="window.history.go('-1')">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                    </a>
+                </h2>
+            </div>
+
+            <table class="table table-striped datatable">
+                <thead>
+                    <tr>
+                        <th>Host Name</th>
+                        <th>User</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{ streams:cycle namespace="hosts" stream="host_users" limit="5" include="<?php echo $this->current_user->id;?>" include_by="created_by" }}
+                    {{ entries }}
+                        <tr class="{{ odd_even }}">
+                            <td style="vertical-align:middle;">{{ host_id.host_desc }}</td>
+                            <td style="vertical-align:middle;">{{ user_id.email }}</td>
+                            <td>
+                                <a href="/hosts/delete_assigned/{{ host_id.id }}/{{ user_id.user_id }}" class="confirm" title="Remove Assigned User">
+                                    <button class="btn btn-danger">Remove</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {{ /entries }}
+                    {{ /streams:cycle }}
+                    {{ pagination }}
+                </tbody>
+>>>>>>> guac
+            </table>
+                <p>{{ error }}{{ input }}</p>
+            {{ else }}
+                <p><a href="users/login">Please login first.</a></p>
+            {{ endif }}
+        </div>
+</div>
